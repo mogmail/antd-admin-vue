@@ -1,77 +1,128 @@
 <template>
   <div class="aside">
+    <div class="title">标题</div>
+     <!-- <a-button type="primary" @click="toggleCollapsed" style="margin-bottom: 16px">
+      <MenuUnfoldOutlined v-if="collapsed" />
+      <MenuFoldOutlined v-else />
+    </a-button> -->
     <a-menu
-      style="width: 256px"
-      :default-selected-keys="['1']"
-      :open-keys.sync="openKeys"
+      v-model:openKeys="openKeys"
+      v-model:selectedKeys="selectedKeys"
       mode="inline"
-      @click="handleClick"
+      theme="dark"
+      :inline-collapsed="collapsed"
     >
-      <a-sub-menu key="sub1" @titleClick="titleClick">
-        <span slot="title">
-          <a-icon type="mail" />
-          <span>Navigation One</span>
-        </span>
-        <a-menu-item-group key="g1">
-          <template slot="title">
-            <a-icon type="qq" />
-            <span>Item 1</span>
-          </template>
-          <a-menu-item key="1">Option 1</a-menu-item>
-          <a-menu-item key="2">Option 2</a-menu-item>
-        </a-menu-item-group>
-        <a-menu-item-group key="g2" title="Item 2">
-          <a-menu-item key="3">Option 3</a-menu-item>
-          <a-menu-item key="4">Option 4</a-menu-item>
-        </a-menu-item-group>
-      </a-sub-menu>
-      <a-sub-menu key="sub2" @titleClick="titleClick">
-        <span slot="title">
-          <a-icon type="appstore" />
-          <span>Navigation Two</span>
-        </span>
+      <a-menu-item key="1">
+        <PieChartOutlined />
+        <span>Option 1</span>
+      </a-menu-item>
+      <a-menu-item key="2">
+        <DesktopOutlined />
+        <span>Option 2</span>
+      </a-menu-item>
+      <a-menu-item key="3">
+        <InboxOutlined />
+        <span>Option 3</span>
+      </a-menu-item>
+      <a-sub-menu key="sub1">
+        <template #title>
+          <span><MailOutlined /><span>Navigation One</span></span>
+        </template>
         <a-menu-item key="5">Option 5</a-menu-item>
         <a-menu-item key="6">Option 6</a-menu-item>
-        <a-sub-menu key="sub3" title="Submenu">
-          <a-menu-item key="7">Option 7</a-menu-item>
-          <a-menu-item key="8">Option 8</a-menu-item>
-        </a-sub-menu>
+        <a-menu-item key="7">Option 7</a-menu-item>
+        <a-menu-item key="8">Option 8</a-menu-item>
       </a-sub-menu>
-      <a-sub-menu key="sub4">
-        <span slot="title">
-          <a-icon type="setting" />
-          <span>Navigation Three</span>
-        </span>
+      <a-sub-menu key="sub2">
+        <template #title>
+          <span><AppstoreOutlined /><span>Navigation Two</span></span>
+        </template>
         <a-menu-item key="9">Option 9</a-menu-item>
         <a-menu-item key="10">Option 10</a-menu-item>
-        <a-menu-item key="11">Option 11</a-menu-item>
-        <a-menu-item key="12">Option 12</a-menu-item>
+        <a-sub-menu key="sub3" title="Submenu">
+          <a-menu-item key="11">
+            Option 11
+          </a-menu-item>
+          <a-menu-item key="12">
+            Option 12
+          </a-menu-item>
+        </a-sub-menu>
       </a-sub-menu>
     </a-menu>
   </div>
 </template>
 <script>
-import { mapState } from "vuex";
+import { computed, inject, reactive, ref, toRefs, watchEffect } from 'vue'
+import {
+  // MenuFoldOutlined,
+  // MenuUnfoldOutlined,
+  PieChartOutlined,
+  MailOutlined,
+  DesktopOutlined,
+  InboxOutlined,
+  AppstoreOutlined,
+} from '@ant-design/icons-vue';
 export default {
+  components: {
+    // MenuFoldOutlined,
+    // MenuUnfoldOutlined,
+    PieChartOutlined,
+    MailOutlined,
+    DesktopOutlined,
+    InboxOutlined,
+    AppstoreOutlined,
+  },
   data() {
     return {
-      items: [],
-      current: ["mail"],
-      openKeys: ["sub1"]
+      collapsed: store.state.collapsed,
+      selectedKeys: ['1'],
+      openKeys: ['sub1'],
+      preOpenKeys: ['sub1'],
     };
   },
   watch: {
-    openKeys(val) {
-      console.log("openKeys", val);
-    }
+    openKeys(val, oldVal) {
+      this.preOpenKeys = oldVal;
+    },
+  },
+  mounted(){
+    
+  },
+   setup(){
+    const memberData = inject('memberData')
+    const homeData = inject('homeData')
+    const userInfo = inject('userInfo') // 模块内部组合响应式变量  getUserInfo 方法
+    // watch 页面组合两个响应式变量
+    const nameAndAge = ref('')
+    watchEffect(()=>{
+      nameAndAge.value =  memberData.age + homeData.name
+    })
+    // computed 页面组合两个响应式变量
+    const nameAgeComputed = computed(() =>  memberData.age + homeData.name)
+
+    const data = {...toRefs(memberData),...toRefs(homeData),...toRefs(userInfo), nameAndAge,nameAgeComputed}
+    return data
   },
   methods: {
-    handleClick(e) {
-      console.log("click", e);
-    },
-    titleClick(e) {
-      console.log("titleClick", e);
-    }
-  }
+    // toggleCollapsed() {
+    //   this.collapsed = !this.collapsed;
+    //   this.openKeys = this.collapsed ? [] : this.preOpenKeys;
+    // },
+  },
 };
 </script>
+<style>
+.aside{
+  width: 300px;
+  height: 100vh;
+  background-color: #001529;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.title{
+  text-align: center;
+  color: #ffffff;
+  font-size: 36px;
+}
+</style>

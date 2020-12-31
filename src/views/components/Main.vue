@@ -1,10 +1,10 @@
  <template>
-  <div class="container">
+  <div class="main">
     <tags />
     <div class="contents">
-      <transition name="fade-transform" mode="out-in">
+      <!-- <transition name="fade-transform" mode="out-in"> -->
         <router-view></router-view>
-      </transition>
+      <!-- </transition> -->
     </div>
   </div>
 </template>
@@ -16,3 +16,13 @@ export default {
   }
 };
 </script>
+<style>
+.main{
+    width: calc(100vw - 300px);
+    height: calc(100vh - 100px);
+    background-color: yellow;
+    position: absolute;
+    top: 100px;
+    left: 300px;
+}
+</style>

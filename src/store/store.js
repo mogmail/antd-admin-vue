@@ -1,28 +1,24 @@
-const store = {
-    state: {
-        token: '',//权限验证
-        tagsList: [], //打开的标签页个数,
-        isCollapse: false, //侧边导航是否折叠
-    },
-    mutations: {
-        //保存token
-        COMMIT_TOKEN(state, object) {
-            state.token = object.token;
-        },
-        //保存标签
-        TAGES_LIST(state, arr) {
-            state.tagsList = arr;
-        },
-        IS_COLLAPSE(state, bool) {
-            state.isCollapse = bool;
-        }
-    },
-    actions: {
+import user from './user'
+import common from './index'
 
-    },
-    getters: {
+const store = createStore({
+    user,
+    common
+})
 
+function createStore(parmas) {
+    return {
+      install(app) {
+        this.provide(app)
+      },
+      provide(app) {
+        const keys = parmas&&Object.keys(parmas)
+        keys&&keys.forEach((item) => { 
+          // 注册
+          app.provide(item,parmas[item])
+        })
+      }
     }
-}
+  }
 
 export default store
