@@ -52,7 +52,9 @@
   </div>
 </template>
 <script>
-import { computed, inject, reactive, ref, toRefs, watchEffect } from 'vue'
+import Store from '@/store/store'
+// reactive,
+import { computed, inject,  ref, toRefs, watchEffect } from 'vue'
 import {
   // MenuFoldOutlined,
   // MenuUnfoldOutlined,
@@ -74,7 +76,7 @@ export default {
   },
   data() {
     return {
-      collapsed: store.state.collapsed,
+      collapsed: Store.state.collapsed,
       selectedKeys: ['1'],
       openKeys: ['sub1'],
       preOpenKeys: ['sub1'],
@@ -86,7 +88,7 @@ export default {
     },
   },
   mounted(){
-    
+    console.log(this.Store)
   },
    setup(){
     const memberData = inject('memberData')
